@@ -1,11 +1,10 @@
 const express = require('express');
 const path = require('path');
-const { dbConnection } = require('./databases/config');
 require('dotenv').config();
 
 // DB Config
 require('./databases/config').dbConnection();
-dbConnection();
+
 
 // App de Express
 const app = express();
@@ -13,10 +12,13 @@ const app = express();
 // Lectura y parseo del Body
 app.use( express.json() );
 
+
 // Node Server
 const server = require('http').createServer(app);
 module.exports.io = require('socket.io')(server);
 require('./sockets/socket');
+
+
 
 
 // Path público
@@ -24,8 +26,13 @@ const publicPath = path.resolve( __dirname, 'public' );
 app.use( express.static( publicPath ) );
 
 
-// Mis rutas
-app.use('/api/login', require('./routers/auth'));
+
+// Mis Rutas
+app.use( '/api/login', require('./routers/auth') );
+app.use( '/api/mensajes', require('./routers/mensajes') );
+app.use( '/api/usuarios', require('./routers/usuarios') );
+
+
 
 server.listen( process.env.PORT, ( err ) => {
 
